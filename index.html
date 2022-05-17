@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="js/vue.js"></script>
+    <title>TECHNO PROJECT</title>
+    <link rel="stylesheet" href="./dist/output.css" />
+  </head>
+
+  <body>
+    <div id="app" class="mx-20 my-0">
+
+      <header class="header relative">
+        <!-- HEADER CONTENT ------------------------------->
+        <img class="w-20" src="./assets/techno.svg" alt="" />
+        <a class="cart" @click="openCart">
+          {{total | numberPrice}} | {{carrinho.length}}
+          <img src="./assets/carrinho.svg" alt="" />
+        </a>
+
+        <!-- ALERTA ITEM ADICONADO ------------------------>
+        <div v-for="item in carrinho" class="alert" :class="{active: added}">
+          <p>{{msg}}</p>
+        </div>
+      </header>
+
+      <section class="modal" v-if="produto" @click="closeModal">
+        <div class="modal_container">
+          <button v-on:click="produto = !produto" class="button">X</button>
+          <!-- IMG BOX ---------------------- -->
+          <div class="modal_img max-w-[300px]">
+            <img
+              :src="produto.img"
+              :alt="produto.nome"
+              class="max-w-[300px] block shadow-xl"
+            />
+          </div>
+          <!-- INFO BOX ---------------------- -->
+          <div class="info">
+            <span class="font-thin">R$ {{produto.preco}},00</span>
+            <h2 class="produto-nome">{{produto.nome}}</h2>
+            <p class="font-thin">{{produto.descricao}}</p>
+            <button
+              v-if="produto.estoque > 0"
+              @click="addItem"
+              class="info-btn"
+            >
+              Adicionar item
+            </button>
+            <button v-else class="info-btn esgotado">Produto esgotado</button>
+          </div>
+          <!-- REVIEWS BOX ------------------- -->
+          <div class="reviews col-start-2">
+            <h2 class="text-[28px]">Avaliações</h2>
+            <ul>
+              <li v-for="avaliacao in produto.avaliacoes">
+                <p class="mt-[20px] font-thin text-[rgba(0,0,0,.7)]">
+                  {{avaliacao.descricao}}
+                </p>
+                <p class="mb-[20px]">
+                  {{avaliacao.nome}} | {{avaliacao.estrelas}} estrelas
+                </p>
+                <hr />
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- PRODUTOS ----------------------------------->
+      <section class="produtos">
+        <div
+          v-on:click="openModal(item.id)"
+          v-for="item in produtos"
+          :key="item.id"
+          class="produto"
+        >
+          <img :src="item.img" :alt="item.nome" class="produto-img" />
+          <div class="produto-info">
+            <span class="produto-preco">{{item.preco | numberPrice}}</span>
+            <h2 class="produto-nome">{{item.nome}}</h2>
+          </div>
+        </div>
+      </section>
+
+      <!-- CARRINHO MODAL ------------------------------->
+      <section class="carrinho-modal" :class="{active: resumo}" @click="closeCarrinhoModal">
+        <div class="carrinho-container">
+          <button v-on:click="resumo = !resumo" class="button">X</button>
+          <h2 class="carrinho-title">Carrinho</h2>
+          <div v-if="carrinho.length > 0" class="h-auto"> 
+            <ul class="carrinho-lista">
+              <li v-for="(item, index) in carrinho" 
+              class="flex items-end justify-between font-thin border-b-[1px]">                
+                <p class="mt-[15px]">{{item.nome}}</p>
+                <p> {{item.preco | numberPrice}}
+                  <button class="font-['Arial']" @click="removeItem(index)">
+                    ⠀⠀X⠀⠀
+                  </button>
+                </p>                
+              </li>
+            </ul>
+            <p class="carrinho-total">
+              {{total | numberPrice}}
+            </p>
+            <button class="carrinho-comprar-button">Finalizar compra</button>
+          </div>
+          <p v-else class="font-thin">O carrinho está vazio</p>
+          
+        </div>
+
+      </section>
+    </div>
+
+    <script src="js/app.js"></script>
+  </body>
+</html>
